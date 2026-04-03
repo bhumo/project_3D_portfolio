@@ -1,101 +1,50 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-
-import { styles } from "../styles";
-import { navLinks } from "../constants";
-import { logo, menu, close } from "../assets";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { resumeUrl } from '../utils/site';
 
 const Navbar = () => {
-  const [active, setActive] = useState("");
-  const [toggle, setToggle] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      if (scrollTop > 100) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+  const navLinks = ['skills', 'experience', 'projects'];
+  
   return (
-    <nav
-      className={`${
-        styles.paddingX
-      } w-full flex items-center py-5 fixed top-0 z-20 ${
-        scrolled ? "bg-primary" : "bg-transparent"
-      }`}
+    <motion.nav 
+      initial={{ y: -100, opacity: 0, x: '-50%' }} 
+      animate={{ y: 0, opacity: 1, x: '-50%' }} 
+      transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      style={{
+        position: 'fixed', top: '40px', left: '50%', zIndex: 1000,
+        display: 'flex', gap: '32px', padding: '16px 24px', borderRadius: '100px',
+        backgroundColor: 'rgba(10, 10, 10, 0.8)', backdropFilter: 'blur(40px)', 
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 30px 60px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(255,255,255,0.05)',
+        alignItems: 'center'
+      }}
     >
-      <div className='w-full flex justify-between items-center max-w-7xl mx-auto'>
-        <Link
-          to='/'
-          className='flex items-center gap-2'
-          onClick={() => {
-            setActive("");
-            window.scrollTo(0, 0);
+      {navLinks.map(link => (
+        <a key={link} href={`#${link}`} style={{ 
+            color: 'var(--text-primary)', textDecoration: 'none', fontSize: '0.8.5rem', 
+            textTransform: 'uppercase', letterSpacing: '4px', fontWeight: 600, transition: 'color 0.3s' 
           }}
+          onMouseOver={(e) => e.currentTarget.style.color = 'var(--accent)'}
+          onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
         >
-          <img src={logo} alt='logo' className='w-9 h-9 object-contain' />
-          <p className='text-white text-[18px] font-bold cursor-pointer flex '>
-            Adrian &nbsp;
-            <span className='sm:block hidden'> | Developer Portfolio</span>
-          </p>
-        </Link>
-
-        <ul className='list-none hidden sm:flex flex-row gap-10'>
-          {navLinks.map((nav) => (
-            <li
-              key={nav.id}
-              className={`${
-                active === nav.title ? "text-white" : "text-secondary"
-              } hover:text-white text-[18px] font-medium cursor-pointer`}
-              onClick={() => setActive(nav.title)}
-            >
-              <a href={`#${nav.id}`}>{nav.title}</a>
-            </li>
-          ))}
-        </ul>
-
-        <div className='sm:hidden flex flex-1 justify-end items-center'>
-          <img
-            src={toggle ? close : menu}
-            alt='menu'
-            className='w-[28px] h-[28px] object-contain'
-            onClick={() => setToggle(!toggle)}
-          />
-
-          <div
-            className={`${
-              !toggle ? "hidden" : "flex"
-            } p-6 black-gradient absolute top-20 right-0 mx-4 my-2 min-w-[140px] z-10 rounded-xl`}
-          >
-            <ul className='list-none flex justify-end items-start flex-1 flex-col gap-4'>
-              {navLinks.map((nav) => (
-                <li
-                  key={nav.id}
-                  className={`font-poppins font-medium cursor-pointer text-[16px] ${
-                    active === nav.title ? "text-white" : "text-secondary"
-                  }`}
-                  onClick={() => {
-                    setToggle(!toggle);
-                    setActive(nav.title);
-                  }}
-                >
-                  <a href={`#${nav.id}`}>{nav.title}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </nav>
+          {link}
+        </a>
+      ))}
+      
+      {/* Moved PDF Download directly into Nav Island */}
+      <a 
+         href={resumeUrl} download="Bhumika_Gupta_Resume.pdf"
+         style={{ 
+           marginLeft: '16px', padding: '12px 24px', borderRadius: '100px', backgroundColor: 'var(--accent)',
+           color: '#000', textDecoration: 'none', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '2px', 
+           fontSize: '0.8rem', boxShadow: '0 4px 15px rgba(255, 77, 0, 0.4)', transition: 'all 0.3s'
+         }}
+         onMouseOver={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(255, 77, 0, 0.6)'; }}
+         onMouseOut={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 77, 0, 0.4)'; }}
+      >
+         DOWNLOAD CV
+      </a>
+    </motion.nav>
   );
 };
 
